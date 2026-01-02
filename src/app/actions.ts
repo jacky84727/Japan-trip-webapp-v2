@@ -23,10 +23,13 @@ export async function verifyPasswordAction(prevState: any, formData: FormData) {
 
         if (inputPassword === correctPassword) {
             // 驗證成功，設定 Cookie
+            const sevenDays = 60 * 60 * 24 * 7 * 1000;
             (await cookies()).set('journey_auth', 'true', {
-                maxAge: 60 * 60 * 24 * 7, // 7 Days
+                maxAge: 60 * 60 * 24 * 7, // 7 Days in seconds
+                expires: Date.now() + sevenDays,
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
                 path: '/',
             });
             return { success: true };

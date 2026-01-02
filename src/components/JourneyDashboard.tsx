@@ -9,9 +9,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TripMetadata, ItineraryItem } from '@/lib/notion';
 import { parseNotionDateTime, cn } from '@/lib/utils';
 import { JourneyCard } from './JourneyCard';
-import { LoginScreen } from './LoginScreen';
-import Cookies from 'js-cookie';
+// import { LoginScreen } from './LoginScreen'; // Removed
 import { TopBar } from './TopBar';
+// import Cookies from 'js-cookie'; // Removed
 import { BottomNav, TabType } from './BottomNav';
 import { CurrencyWidget } from './CurrencyWidget';
 import { TimeZoneWidget } from './TimeZoneWidget';
@@ -36,32 +36,13 @@ const toFloatingDate = (dateStr: string): Date => {
 
 export default function JourneyDashboard({ data, requiredPassword }: JourneyDashboardProps) {
     const { metadata, itinerary } = data;
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-
-    const [activeTab, setActiveTab] = useState<TabType>('home');
-    const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
-
     // Current time for "Now" logic
     // In a real app, you might want this to update every minute, but for now fixed on mount is fine
     const [now, setNow] = useState<Date | null>(null);
 
     useEffect(() => {
         setNow(new Date());
-
-        // Check Auth
-        if (!requiredPassword) {
-            setIsLoggedIn(true);
-            setIsLoadingAuth(false);
-            return;
-        }
-
-        const authCookie = Cookies.get('journey_auth');
-        if (authCookie === 'true') {
-            setIsLoggedIn(true);
-        }
-        setIsLoadingAuth(false);
-    }, [requiredPassword]);
+    }, []);
 
     // Sort by date (already sorted in notion.ts but good safety)
     const sortedJourneys = useMemo(() =>
@@ -294,16 +275,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
         </div>
     );
 
-    if (isLoadingAuth) return null;
 
-    if (!isLoggedIn && requiredPassword) {
-        return (
-            <LoginScreen
-                requiredPassword={requiredPassword}
-                onLoginSuccess={() => setIsLoggedIn(true)}
-            />
-        );
-    }
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-blue-100">
