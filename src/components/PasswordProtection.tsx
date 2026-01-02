@@ -42,9 +42,11 @@ export default function PasswordProtection() {
 
     useEffect(() => {
         if (state.success) {
-            router.refresh();
+            // Force a hard reload to ensure the new cookie is recognized by the server
+            // router.refresh() sometimes has race conditions with cookie setting in middleware/layouts
+            window.location.reload();
         }
-    }, [state.success, router]);
+    }, [state.success]);
 
     return (
         <div className="fixed inset-0 z-50 bg-white/80 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
@@ -54,7 +56,7 @@ export default function PasswordProtection() {
                         <Lock className="w-8 h-8" />
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900 tracking-tight">行程保護</h1>
-                    <p className="text-gray-500 mt-2 text-center text-sm">此頁面受密碼保護，請輸入 6 位數通行碼以繼續。</p>
+                    <p className="text-gray-500 mt-2 text-center text-sm">此頁面受密碼保護，請輸入 4 位數通行碼以繼續。</p>
                 </div>
 
                 <form action={formAction} className="w-full">
@@ -68,7 +70,7 @@ export default function PasswordProtection() {
                                 autoComplete="off"
                                 placeholder="輸入通行碼"
                                 className="w-full text-center text-3xl font-bold tracking-[0.5em] py-4 rounded-xl border-2 border-gray-100 focus:border-black focus:ring-0 outline-none transition-all placeholder:text-gray-200 placeholder:tracking-normal placeholder:font-normal placeholder:text-lg"
-                                maxLength={6}
+                                maxLength={4}
                                 value={password}
                                 onChange={(e) => {
                                     // 僅允許數字

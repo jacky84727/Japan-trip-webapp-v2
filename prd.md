@@ -1,10 +1,12 @@
 # 旅遊行程看板渲染器 (Notion Based) PRD
 
 ## 1. 專案概述 (Overview)
-本專案旨在建立一個以 **Notion Database** 作為後端的旅遊行程渲染器。只需在部署後在環境變數配置 Notion API Key 和 Database ID，即可動態更新前端顯示的旅遊內容。專案優先適配 **移動端** 介面。
+**Notion Journey** 是一個將 Notion 轉化為精美旅遊行程 App 的極簡解決方案。專為旅行者設計，解決傳統旅遊手冊難以在手機閱讀、Notion 原生介面過於單調的問題。
 
-- **核心價值**: 資料與介面分離。透過 Notion 管理行程，前端負責 Premium 的視覺呈現。
-- **安全性**: 透過 Next.js API Routes 建立 Server-side Proxy，確保 `NOTION_API_KEY` 不會暴露於前端。
+- **極簡配置**: 0 程式碼基礎也能使用，只需提供 Notion API Key 與 Database ID。
+- **極致體驗**: 專為移動端打造的 Premium 玻璃擬態介面，不僅是行程表，更是隨身的旅遊嚮導。
+- **動態同步**: 所有內容在 Notion 修改即時更新，無須重新部署。
+- **隱私優先**: 內建密碼保護機制，確保私人行程不外洩。
 
 ## 2. 核心功能需求 (Functional Requirements)
 
@@ -16,7 +18,8 @@
 
 ### 2.2 介面功能 (UI Features)
 - **Top Bar (固定 玻璃擬態)**:
-    - **標題與日期**: 顯示城市名稱、旅遊日期範圍。
+    - **標題**: 格式為 「國家 - 城市」 (e.g., "日本 - 京都&大阪")。
+    - **日期**: 顯示旅遊日期範圍。
     - **視覺優化**: 採用漸層背景與 iOS 風格排版。
 - **分日行程列表 (Group by Day)**:
     - **自動分組**: 根據日期自動計算「Day 1, Day 2...」並進行區分。
@@ -28,6 +31,7 @@
             - 判斷當天日期，如果非活動當天日期，以每一天為一個卡片做收折顯示，使用者可以點擊卡片展開該日的行程。
             - 如果是活動當天日期，則顯示該日的行程，用時間軸的方式展示，同時需要偵測當時的時間點，過去時間的行程降低顯示飽和度。
             - 首頁有下拉選單用於選擇日期，預設是活動當天日期，使用者選擇其他日期則顯示指定日期的行程。
+            - **當地時間**: 優化 Widget 載入速度，消除初始延遲。
         - **景點**:
             - 包含景點、餐廳、購物，按照分類展示。
             - 以時間作為排序，時間越近的行程越前面。，過去時間的行程降低顯示飽和度。
@@ -35,6 +39,10 @@
             - 需要顯示住宿地點的照片。
         - **交通**:
         - **資訊**:
+            - **內容來源**: 讀取 Notion Database 中 `type=config` 且 `config=info` 的 Page 內容。
+            - **呈現方式**: 直接顯示 Page 內的 Block 內容，移除預設的「緊急資訊」標題。
+            - **地址優化**: 若內容包含「地址」，顯示純文字（去除超連結樣式），並在後方加入「導航按鈕」連結至地圖。
+            - **電話優化**: 若內容包含「電話」（一般/緊急），在後方加入「通話按鈕」，支援一鍵撥打。
 - **卡片展示**: type 為 journey 的資料所有展示形式預設相同。
 - **匯率換算器**:
     - 置頂於行程頁，方便根據 `exchange` 設定即時參考，需要連動即時匯率。
@@ -51,7 +59,7 @@
 
 ### 2.4 行程隱私保護 (Privacy & Auth)
 - **密碼登入機制**:
-    - 在 Database `config` 增加 `password` 設定網站存取密碼 (6位數)。
+    - 在 Database `config` 增加 `password` 設定網站存取密碼 (4位數)。
     - 雖是靜態網站渲染，但在進入主頁面 (**Root Layout**) 前需通過 **Server Action** 驗證。
     - **驗證流程**:
         1. 使用者開啟網站，若無有效 Cookie，顯示全螢幕密碼輸入框 (**PasswordProtection**)，此時網頁原始碼不包含任何行程資料。
@@ -63,7 +71,7 @@
 ## 3. Notion Database 欄位架構 (Schema)
 1.  **title**: 標題 (Title)
 2.  **type**: 資料大類 (Select: `config`, `journey`)
-3.  **config**: 配置細項 (Select: `country`, `city`, `exchange`, `gmt`, `password`) - *僅當 type 為 config 時有效*
+3.  **config**: 配置細項 (Select: `country`, `city`, `exchange`, `gmt`, `password`, `info`) - *僅當 type 為 config 時有效*
 4.  **journey**: 行程分類 (Select: `transport`, `hotel`, `visit`, `restaurant`, `shopping`) - *僅當 type 為 journey 時有效*
 5.  **date**: 時間 (Date with time)
 6.  **maps**: 地點連結 (URL)
@@ -78,3 +86,4 @@
 ## 5. 部署與極簡配置 (Deployment)
 - **零程式碼修改**: 使用者只需設定環境變數即可完成配置。
 - **自動化渲染**: 系統自動解析 `type` 與對應屬性，產出分組後的行程看板。
+- **靜態資源**: 支援客製化永久 Favicon 與 App Icon。
