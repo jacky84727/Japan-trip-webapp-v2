@@ -3,7 +3,7 @@
     "short_name": "NotionJourney",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#f8f9fa",
+    "background_color": "#ffffff",
     "theme_color": "#a31b24",
     "icons": [
         {

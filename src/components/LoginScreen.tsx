@@ -60,7 +60,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ requiredPassword, onLo
                         </div>
                     </div>
 
-                    <h1 className="text-2xl font-bold text-white mb-2 tracking-wide">Welcome Back</h1>
+                    <h1 className="text-2xl font-bold text-white mb-2 tracking-wide">Welcome</h1>
                     <p className="text-white/70 mb-8 text-sm">請輸入訪問密碼以查看行程</p>
 
                     <motion.div
@@ -76,7 +76,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ requiredPassword, onLo
                                 setError(false);
                             }}
                             onKeyDown={handleKeyDown}
-                            placeholder="輸入 6 位數密碼"
+                            placeholder="輸入 4 位數密碼"
                             className={cn(
                                 "w-full bg-black/20 text-white placeholder-white/40 border text-center text-xl tracking-[0.5em] py-4 rounded-xl outline-none transition-all duration-300",
                                 error
@@ -99,7 +99,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ requiredPassword, onLo
                                 : "bg-white/10 cursor-not-allowed text-white/30"
                         )}
                     >
-                        <span>進入行程</span>
+                        <span>準備出發</span>
                         <ArrowRight size={18} />
                     </motion.button>
 
