@@ -2,9 +2,6 @@
 
 **Notion Journey** 是一個將 Notion 轉化為精美旅遊行程 App 的極簡解決方案。專為旅行者設計，解決傳統旅遊手冊難以在手機閱讀、Notion 原生介面過於單調的問題。
 
-![App Screenshot](/public/icon-512.png) 
-*(建議在此處替換為實際的 App 截圖)*
-
 ## ✨ 核心特色 (Features)
 
 - **📱 Mobile-First 極致體驗**: 專為移動端打造的 Premium 玻璃擬態介面，支援 PWA 安裝至主畫面，提供如同原生 App 的流暢體驗。
