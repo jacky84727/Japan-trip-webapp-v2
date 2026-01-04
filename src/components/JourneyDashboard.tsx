@@ -294,6 +294,33 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
         setTouchEnd(e.targetTouches[0].clientX);
     };
 
+    // Navigation Direction for Animation
+    const [direction, setDirection] = useState(0);
+
+    const variants = {
+        enter: (direction: number) => ({
+            x: direction > 0 ? 300 : -300,
+            opacity: 0
+        }),
+        center: {
+            zIndex: 1,
+            x: 0,
+            opacity: 1
+        },
+        exit: (direction: number) => ({
+            zIndex: 0,
+            x: direction < 0 ? 300 : -300,
+            opacity: 0
+        })
+    };
+
+    const changeTab = (newTab: TabType) => {
+        const currentIndex = TABS.indexOf(activeTab);
+        const nextIndex = TABS.indexOf(newTab);
+        setDirection(nextIndex > currentIndex ? 1 : -1);
+        setActiveTab(newTab);
+    };
+
     const onTouchEnd = (e: React.TouchEvent) => {
         if (!touchStart || !touchEnd || !touchStartY) return;
 
@@ -301,11 +328,9 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
         const isLeftSwipe = distance > minSwipeDistance;
         const isRightSwipe = distance < -minSwipeDistance;
 
-        // Check vertical distance to ensure it's a horizontal swipe intent
         const verticalDistance = Math.abs(touchStartY - e.changedTouches[0].clientY);
         const horizontalDistance = Math.abs(distance);
 
-        // If vertical movement is greater than horizontal, it's likely a scroll, ignore swipe
         if (verticalDistance > horizontalDistance) return;
 
         if (isLeftSwipe || isRightSwipe) {
@@ -319,6 +344,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
             }
 
             if (nextIndex !== currentIndex) {
+                setDirection(nextIndex > currentIndex ? 1 : -1);
                 setActiveTab(TABS[nextIndex]);
             }
         }
@@ -336,7 +362,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
                     }
                 />
 
-                <main className="absolute inset-0 pt-20 overflow-hidden">
+                <main className="absolute inset-0 pt-[calc(env(safe-area-inset-top)+78px)] overflow-hidden">
                     <PullToRefresh className="h-full">
                         <div
                             className="min-h-full"
@@ -344,16 +370,32 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
                             onTouchMove={onTouchMove}
                             onTouchEnd={onTouchEnd}
                         >
-                            {activeTab === 'home' && renderHome()}
-                            {activeTab === 'visit' && renderFiltered('visit_group')}
-                            {activeTab === 'hotel' && renderFiltered('hotel')}
-                            {activeTab === 'transport' && renderFiltered('transport')}
-                            {activeTab === 'info' && renderInfo()}
+                            <AnimatePresence initial={false} custom={direction} mode='popLayout'>
+                                <motion.div
+                                    key={activeTab}
+                                    custom={direction}
+                                    variants={variants}
+                                    initial="enter"
+                                    animate="center"
+                                    exit="exit"
+                                    transition={{
+                                        x: { type: "spring", stiffness: 300, damping: 30 },
+                                        opacity: { duration: 0.2 }
+                                    }}
+                                    className="min-h-full"
+                                >
+                                    {activeTab === 'home' && renderHome()}
+                                    {activeTab === 'visit' && renderFiltered('visit_group')}
+                                    {activeTab === 'hotel' && renderFiltered('hotel')}
+                                    {activeTab === 'transport' && renderFiltered('transport')}
+                                    {activeTab === 'info' && renderInfo()}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </PullToRefresh>
                 </main>
 
-                <BottomNav currentTab={activeTab} onTabChange={setActiveTab} />
+                <BottomNav currentTab={activeTab} onTabChange={changeTab} />
             </div>
         </div>
     );

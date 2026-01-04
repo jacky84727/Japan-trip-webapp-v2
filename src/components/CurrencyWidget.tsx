@@ -97,7 +97,7 @@ export const CurrencyWidget: React.FC<CurrencyWidgetProps> = ({ rate: initialRat
                                 calculated.length >= 6 ? "text-xl" :
                                     "text-2xl"
                         )}>
-                            {calculated}
+                            {parseFloat(calculated).toLocaleString()}
                         </span>
                     </div>
                 </div>

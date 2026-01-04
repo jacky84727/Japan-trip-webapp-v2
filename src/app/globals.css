@@ -160,8 +160,9 @@ body {
   transform: translateX(-50%);
   width: 100%;
   max-width: 600px;
-  padding-bottom: calc(var(--safe-area-bottom) + 2px);
-  padding-top: 2px;
+  height: 80px;
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-top: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;

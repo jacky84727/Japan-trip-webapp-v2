@@ -109,7 +109,7 @@ export const JourneyCard: React.FC<JourneyCardProps> = ({ item, isPast = false, 
                                         <div className={cn("inline-flex items-center justify-center p-1.5 rounded-lg shadow-sm shrink-0", colorClass)}>
                                             {renderIcon()}
                                         </div>
-                                        <h3 className="font-bold text-slate-800 text-lg leading-tight">{item.title}</h3>
+                                        <h3 className="font-bold text-slate-800 text-base leading-tight">{item.title}</h3>
                                     </div>
                                 </div>
                                 {item.maps && (
@@ -124,12 +124,6 @@ export const JourneyCard: React.FC<JourneyCardProps> = ({ item, isPast = false, 
                                     </a>
                                 )}
                             </div>
-
-                            {item.description && (
-                                <p className="text-sm text-slate-500 mt-1 bg-slate-50/50 p-2 rounded-lg border border-slate-100 line-clamp-2">
-                                    {item.description}
-                                </p>
-                            )}
                         </div>
                     </div>
                 </DialogTrigger>
@@ -203,7 +197,7 @@ export const JourneyCard: React.FC<JourneyCardProps> = ({ item, isPast = false, 
                         )}
                     </div>
                 </DialogContent>
-            </Dialog>
-        </div>
+            </Dialog >
+        </div >
     );
 };
