@@ -40,7 +40,6 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
 
     const [activeTab, setActiveTab] = useState<TabType>('home');
     const [expandedDays, setExpandedDays] = useState<Record<string, boolean>>({});
-    const [isAtTop, setIsAtTop] = useState(true);
 
     // Current time for "Now" logic
     // In a real app, you might want this to update every minute, but for now fixed on mount is fine
@@ -104,14 +103,9 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
             <div className="pb-32 pt-4">
                 {/* Widgets Row */}
                 <div className="mx-4 mb-6 flex gap-4 h-28">
-                    <div className="w-2/3">
+                    <div className="w-full">
                         <CurrencyWidget
                             currencyCode={metadata.exchangeRate || 'JPY'}
-                        />
-                    </div>
-                    <div className="w-1/3">
-                        <TimeZoneWidget
-                            gmtOffset={metadata.timezone || '+9'}
                         />
                     </div>
                 </div>
@@ -283,6 +277,53 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
 
 
 
+    // Swipe Logic
+    const TABS: TabType[] = ['home', 'visit', 'hotel', 'transport', 'info'];
+    const minSwipeDistance = 50;
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+    const [touchStartY, setTouchStartY] = useState<number | null>(null); // To check vertical dominance
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+        setTouchStartY(e.targetTouches[0].clientY);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = (e: React.TouchEvent) => {
+        if (!touchStart || !touchEnd || !touchStartY) return;
+
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        // Check vertical distance to ensure it's a horizontal swipe intent
+        const verticalDistance = Math.abs(touchStartY - e.changedTouches[0].clientY);
+        const horizontalDistance = Math.abs(distance);
+
+        // If vertical movement is greater than horizontal, it's likely a scroll, ignore swipe
+        if (verticalDistance > horizontalDistance) return;
+
+        if (isLeftSwipe || isRightSwipe) {
+            const currentIndex = TABS.indexOf(activeTab);
+            let nextIndex = currentIndex;
+
+            if (isLeftSwipe && currentIndex < TABS.length - 1) {
+                nextIndex = currentIndex + 1;
+            } else if (isRightSwipe && currentIndex > 0) {
+                nextIndex = currentIndex - 1;
+            }
+
+            if (nextIndex !== currentIndex) {
+                setActiveTab(TABS[nextIndex]);
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-blue-100">
             <div className="max-w-[768px] mx-auto min-h-screen bg-[#F8FAFC] shadow-2xl relative transition-colors duration-300">
@@ -295,15 +336,14 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
                     }
                 />
 
-                <main
-                    className="absolute inset-0 overflow-y-auto pt-20"
-                    onScroll={(e) => {
-                        const target = e.currentTarget;
-                        setIsAtTop(target.scrollTop <= 0);
-                    }}
-                >
-                    <PullToRefresh isPullable={isAtTop}>
-                        <div className="min-h-full">
+                <main className="absolute inset-0 pt-20 overflow-hidden">
+                    <PullToRefresh className="h-full">
+                        <div
+                            className="min-h-full"
+                            onTouchStart={onTouchStart}
+                            onTouchMove={onTouchMove}
+                            onTouchEnd={onTouchEnd}
+                        >
                             {activeTab === 'home' && renderHome()}
                             {activeTab === 'visit' && renderFiltered('visit_group')}
                             {activeTab === 'hotel' && renderFiltered('hotel')}
