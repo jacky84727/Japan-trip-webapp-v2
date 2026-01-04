@@ -100,7 +100,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
     // 1. UNIFIED HOME TAB
     const renderHome = () => {
         return (
-            <div className="pb-32 pt-4">
+            <div className="pb-8 pt-4">
                 {/* Widgets Row */}
                 <div className="mx-4 mb-6 flex gap-4 h-28">
                     <div className="w-full">
@@ -217,7 +217,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
         }
 
         return (
-            <div className="pb-32 pt-4 px-4">
+            <div className="pb-8 pt-4 px-4">
                 {filteredItems.length === 0 ? (
                     <div className="text-center py-20 text-slate-400">
                         <p>此分類目前沒有行程。</p>
@@ -261,7 +261,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
     // 4. INFO TAB (Placeholder content or adapted)
     // 4. INFO TAB
     const renderInfo = () => (
-        <div className="pb-32 pt-4 px-4">
+        <div className="pb-8 pt-4 px-4">
             {metadata.infoPage ? (
                 <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-sm border border-white/60">
                     <NotionBlockRenderer blocks={metadata.infoPage.blocks} />
@@ -351,8 +351,8 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-blue-100">
-            <div className="max-w-[768px] mx-auto min-h-screen bg-[#F8FAFC] shadow-2xl relative transition-colors duration-300">
+        <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-blue-100 flex justify-center">
+            <div className="w-full max-w-[768px] h-[100dvh] bg-[#F8FAFC] shadow-2xl relative overflow-hidden transition-colors duration-300">
                 <TopBar
                     title={metadata.city ? `${metadata.title} - ${metadata.city}` : metadata.title}
                     subtitle={
@@ -362,7 +362,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
                     }
                 />
 
-                <main className="absolute inset-0 pt-[calc(env(safe-area-inset-top)+78px)] overflow-hidden">
+                <main className="absolute inset-0 top-[calc(env(safe-area-inset-top)+78px)] bottom-[calc(env(safe-area-inset-bottom)+80px)] overflow-hidden">
                     <PullToRefresh className="h-full">
                         <div
                             className="min-h-full"
