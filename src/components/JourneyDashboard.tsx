@@ -355,6 +355,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
             <div className="w-full max-w-[768px] h-[100dvh] bg-[#F8FAFC] shadow-2xl relative overflow-hidden transition-colors duration-300">
                 <TopBar
                     title={metadata.city ? `${metadata.title} - ${metadata.city}` : metadata.title}
+                    gmtOffset={metadata.timezone || '+9'}
                     subtitle={
                         metadata.startDate && metadata.endDate
                             ? format(parseISO(metadata.startDate), 'MMM do', { locale: zhTW }) + ' - ' + format(parseISO(metadata.endDate), 'MMM do', { locale: zhTW })
@@ -362,7 +363,7 @@ export default function JourneyDashboard({ data, requiredPassword }: JourneyDash
                     }
                 />
 
-                <main className="absolute inset-0 top-[calc(env(safe-area-inset-top)+78px)] bottom-[calc(env(safe-area-inset-bottom)+80px)] overflow-hidden">
+                <main className="absolute inset-0 top-[calc(env(safe-area-inset-top)+78px)] bottom-[calc(env(safe-area-inset-bottom)+64px)] overflow-hidden">
                     <PullToRefresh className="h-full">
                         <div
                             className="min-h-full"

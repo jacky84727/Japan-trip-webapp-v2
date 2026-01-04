@@ -80,7 +80,7 @@ export const JourneyCard: React.FC<JourneyCardProps> = ({ item, isPast = false, 
         )}>
             {/* List View Cover Image */}
             {item.img && !hideImage && (
-                <div className="h-32 w-full relative overflow-hidden">
+                <div className="h-20 w-full relative overflow-hidden">
                     <img
                         src={item.img}
                         alt={item.title}
@@ -94,11 +94,11 @@ export const JourneyCard: React.FC<JourneyCardProps> = ({ item, isPast = false, 
                 if (open) fetchBlocks();
             }}>
                 <DialogTrigger asChild>
-                    <div className={cn("p-4 flex gap-4 cursor-pointer hover:bg-white/50 transition-colors", item.img && !hideImage ? "" : "pt-4")}>
+                    <div className={cn("p-2.5 flex gap-3 cursor-pointer hover:bg-white/50 transition-colors", item.img && !hideImage ? "" : "pt-3")}>
                         {/* Time & Line */}
-                        <div className="flex flex-col items-center min-w-[3.5rem]">
-                            <span className="text-sm font-bold text-slate-500 font-mono">{timeStr}</span>
-                            <div className="flex-1 w-0.5 bg-slate-200 my-2 rounded-full min-h-[2rem]" />
+                        <div className="flex flex-col items-center min-w-[3rem]">
+                            <span className="text-xs font-bold text-slate-500 font-mono">{timeStr}</span>
+                            <div className="flex-1 w-0.5 bg-slate-200 my-1 rounded-full min-h-[1.5rem]" />
                         </div>
 
                         {/* Content */}
